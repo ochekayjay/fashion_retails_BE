@@ -157,6 +157,6 @@ router.post('/signin',login)
 router.get('/search',authorizer,userSearch)
 router.get('/verifyEmail/:token',creatorVerification)
 router.delete('/delete',authorizer,deleteUser)
-router.get('/personal/:userId',authorizer.getme)
+router.get('/personal/:userId',authorizer,getme)
 
 module.exports = router
