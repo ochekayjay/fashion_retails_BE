@@ -1,0 +1,38 @@
+{
+  "name": "fashion_retails_be",
+  "version": "1.0.0",
+  "description": "the backend code for the fashion retail platfrom",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "server": "nodemon index.js"
+  },
+  "keywords": [
+    "fashion",
+    "customer-relationship",
+    "retailing",
+    "retail"
+  ],
+  "author": "Dickson Joseph Igoche",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.326.0",
+    "@aws-sdk/s3-request-presigner": "^3.327.0",
+    "aws-sdk": "^2.1366.0",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^7.0.5",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.9.1",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
