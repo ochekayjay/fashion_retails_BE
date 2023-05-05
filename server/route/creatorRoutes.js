@@ -130,7 +130,8 @@ router.post('/register',upload.single('avatar') ,async(req,res,next)=>{
           console.log(error);
         } else {
           console.log('Email sent: ' + info.response);
-          res.json({verification:'mail sent'})
+          res.send('mail sent')
+          //res.json({verification:'mail sent'})
         }
       });
     
