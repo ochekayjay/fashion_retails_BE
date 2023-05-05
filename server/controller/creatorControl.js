@@ -5,8 +5,8 @@ const errorClass = require('./errorControl')
 const creatorSchema = require('../model/creatorSchema')
 const nodemailer = require('nodemailer')
 const multer = require('multer')
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
+const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
 
 const dotenv = require('dotenv')
 
