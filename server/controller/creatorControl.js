@@ -57,17 +57,20 @@ const register = async(req,res,next)=>{
 try{
     if(!req.body.Email || !req.body.Password || !req.body.Username || !req.body.name){
         res.status(400)
-        throw new errorClass('Fill all fields',400)
+        res.send('Fill all fields')
+        //throw new errorClass('Fill all fields',400)
     }
    const {Username,Password,Email,name,bio} = req.body
    const exisitingEmail = await creatorSchema.findOne({Email})
    const exisitingUsername = await creatorSchema.findOne({Username})
    if(exisitingEmail || exisitingUsername){
        if(exisitingEmail){
-        throw new errorClass('Email already exists',404)
+        res.send('Email already exists')
+        //throw new errorClass('Email already exists',404)
        }
        else{
-        throw new errorClass('Username already exists',405)
+         res.send('Username already exists')
+        //throw new errorClass('Username already exists',405)
        }
        
    }
@@ -128,8 +131,8 @@ const login = async(req,res,next)=>{
     try{
         
         if(!req.body.Email || !req.body.Password ){
-            
-            throw new errorClass('Fill all fields',400)
+             res.send('Fill all fields')
+            //throw new errorClass('Fill all fields',400)
         }
        const {Password,Email} = req.body
        const exisitingUser = await creatorSchema.findOne({Email:Email})
@@ -148,6 +151,7 @@ const login = async(req,res,next)=>{
        }
 
        else{
+            res.send('User does not exist')
            throw new errorClass('User does not exist',400)
        }
     }
