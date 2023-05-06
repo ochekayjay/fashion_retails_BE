@@ -30,7 +30,8 @@ const s3 = new S3Client({
 
 const creatorVerification = async(req,res,next)=>{
     try{
-    const tok = req.params.token
+        res.redirect('https://fashion-retails-fe.vercel.app/')
+    /*const tok = req.params.token
     console.log(tok)
     const decoded = jwt.verify(tok,'abc123')
     console.log(decoded)
@@ -45,7 +46,8 @@ const creatorVerification = async(req,res,next)=>{
         else{
             res.send('link to link expired')
         }
-    }}
+    }*/
+}
 
     catch(error){
         console.log('link to link expired')
