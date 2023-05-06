@@ -39,7 +39,9 @@ const creatorVerification = async(req,res,next)=>{
         verified:true
         })
         if(creatordata?.id){
-            res.send('link to congratulatory message')}
+            res.redirect('https://fashion-retails-fe.vercel.app/')
+            //res.send('link to congratulatory message')
+        }
         else{
             res.send('link to link expired')
         }
