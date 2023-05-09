@@ -114,7 +114,10 @@ router.post('/register',upload.single('avatar') ,async(req,res,next)=>{
            instagram: req.body?.instagram,
        })
        const verificationToken = generateTokenEmailVerification(userdata._id); // generate a unique token
-       const verificationLink = `https://fashion-r-services.onrender.com/creator/verifyEmail?token=${verificationToken}`;
+       const verificationLink = `https://fashion-r-services.onrender.com/creator/verifyEmail/${verificationToken}`;
+    
+       
+       //const verificationLink = `https://fashion-r-services.onrender.com/creator/verifyEmail?token=${verificationToken}`;
     
       
       const mailOptions = {

@@ -27,4 +27,4 @@ app.use(cors({
 
     app.use('/creator', creatorRoutes)
 
-app.listen(port, ()=> console.log( 'in here'))
+app.listen(port, ()=> console.log( `in ${port}`))
