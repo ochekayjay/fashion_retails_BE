@@ -6,7 +6,9 @@ const creatorSchema = require('../model/creatorSchema')
 const nodemailer = require('nodemailer')
 const multer = require('multer')
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
-const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
+const { S3Client, GetObjectCommand, PutObjectCommand } = require("@aws-sdk/client-s3");
+const { getSignedUrl } =  require("@aws-sdk/s3-request-presigner");
+
 
 const dotenv = require('dotenv')
 
@@ -144,21 +146,33 @@ const login = async(req,res,next)=>{
        const exisitingUser = await creatorSchema.findOne({Email:Email})
        if(exisitingUser && (await bcrypt.compare(Password,exisitingUser.Password))){
             if(!exisitingUser.verified){
-                res.send('unverified user')
+                res.json({status:'unverified'})
+            }
+            const getObjectParams = {
+                Bucket: bucketName,
+                Key: exisitingUser.avatarName
             }
 
-        
+            const command = new GetObjectCommand(getObjectParams);
+            const url = await getSignedUrl(s3, command, { expiresIn: 3600*5 });
            res.status(200).json({
             _id:exisitingUser.id,
             Username:exisitingUser.Username,
             name:exisitingUser.name,
             Email:exisitingUser.Email,
+            avatarLink:url,
+            status:'successful',
             Token:generateToken(exisitingUser._id)})
        }
 
        else{
-            res.send('User does not exist')
+        res.json({status:'no user'})
+
+        /**
+         * 
+         * res.send('User does not exist')
            throw new errorClass('User does not exist',400)
+         */
        }
     }
     
