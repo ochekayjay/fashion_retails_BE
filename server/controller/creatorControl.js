@@ -148,6 +148,7 @@ const login = async(req,res,next)=>{
             if(!exisitingUser.verified){
                 res.json({status:'unverified'})
             }
+            console.log('in here')
             const getObjectParams = {
                 Bucket: bucketName,
                 Key: exisitingUser.avatarName
@@ -162,7 +163,7 @@ const login = async(req,res,next)=>{
             Email:exisitingUser.Email,
             avatarLink:url,
             status:'successful',
-            Token:generateToken(exisitingUser._id)})
+            Token: generateTokenAuthorization(exisitingUser._id)})
        }
 
        else{
