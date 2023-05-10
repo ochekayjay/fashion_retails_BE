@@ -7,7 +7,7 @@ const nodemailer = require('nodemailer')
 const multer = require('multer')
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const { S3Client, GetObjectCommand, PutObjectCommand } = require("@aws-sdk/client-s3");
-const { getSignedUrl } =  require("@aws-sdk/s3-request-presigner");
+
 
 
 const dotenv = require('dotenv')
