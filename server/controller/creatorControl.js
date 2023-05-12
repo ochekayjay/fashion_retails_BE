@@ -139,7 +139,8 @@ const login = async(req,res,next)=>{
     try{
         
         if(!req.body.Email || !req.body.Password ){
-             res.send('Fill all fields')
+            console.log('a')
+             res.json({message:'Fill all fields'})
             //throw new errorClass('Fill all fields',400)
         }
        const {Password,Email} = req.body
