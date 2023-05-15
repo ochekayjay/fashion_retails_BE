@@ -164,6 +164,7 @@ const login = async(req,res,next)=>{
             Email:exisitingUser.Email,
             avatarLink:url,
             status:'successful',
+            color: exisitingUser.backgroundColor,
             Token: generateTokenAuthorization(exisitingUser._id)})
        }
 
@@ -194,8 +195,13 @@ const login = async(req,res,next)=>{
             const url = await getSignedUrl(s3, command, { expiresIn: 3600*5 });
 
             res.json({
-                url,
-                username:exisitingUser.Username
+                _id:exisitingUser.id,
+            Username:exisitingUser.Username,
+            name:exisitingUser.name,
+            Email:exisitingUser.Email,
+            avatarLink:url,
+            status:'successful',
+            color: exisitingUser.backgroundColor,
             })
 
 
