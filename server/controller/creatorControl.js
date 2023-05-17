@@ -186,6 +186,7 @@ const login = async(req,res,next)=>{
 
     const getAvatar = async(req,res,next)=>{
         try{
+            console.log('i a in')
             const exisitingUser = await creatorSchema.findById(req.params.userId)
             const getObjectParams = {
                 Bucket: bucketName,
