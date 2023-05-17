@@ -184,6 +184,27 @@ const login = async(req,res,next)=>{
     }
     }
 
+    const getAvatar = async(req,res,next)=>{
+        try{
+            const exisitingUser = await creatorSchema.findById(req.params.userId)
+            const getObjectParams = {
+                Bucket: bucketName,
+                Key: exisitingUser.avatarName
+            }
+            const command = new GetObjectCommand(getObjectParams);
+            const url = await getSignedUrl(s3, command, { expiresIn: 3600*5 });
+
+            res.json({
+            avatarLink:url,
+            })
+
+        }
+
+        catch(error){
+            console.log(error)
+        }
+    }
+
     const getme = async(req,res,next)=>{
         try{
             const exisitingUser = await creatorSchema.findById(req.params.userId)
@@ -259,4 +280,4 @@ const login = async(req,res,next)=>{
     
 
 
-    module.exports = {register,login,deleteUser,userSearch,creatorVerification,getme}
+    module.exports = {register,login,deleteUser,userSearch,creatorVerification,getme,getAvatar}
