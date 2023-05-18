@@ -188,7 +188,7 @@ const login = async(req,res,next)=>{
         try{
 
             const userBody = req.body
-            const newProfile = await creatorSchema.findByIdAndUpdate(req.user.id,userBody,{new:true})
+            const newProfile = await creatorSchema.findByIdAndUpdate(req.user.id,{ $set: userBody},{new:true})
             if(newProfile){
                 res.json(newProfile)
             }
