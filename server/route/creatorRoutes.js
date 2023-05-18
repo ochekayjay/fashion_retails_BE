@@ -1,4 +1,4 @@
-const {login,deleteUser,userSearch,creatorVerification,getme,getAvatar} = require('../controller/creatorControl')
+const {login,deleteUser,userSearch,creatorVerification,getme,getAvatar, editProfile} = require('../controller/creatorControl')
 const router = require('express').Router()
 const authorizer = require('../middlewares/authorizeUser')
 const bcrypt = require('bcryptjs')
@@ -162,6 +162,7 @@ router.get('/search',authorizer,userSearch)
 router.get('/verifyEmail/:token',creatorVerification)
 router.delete('/delete',authorizer,deleteUser)
 router.get('/avatar/:userId',getAvatar)
+router.post('/editProfile',authorizer,editProfile)
 router.get('/personal/:userId',authorizer,getme)
 
 module.exports = router

@@ -35,6 +35,9 @@ const creator = mongoose.Schema({
         type: Boolean,
         default: false
     },
+    hashtag:{
+        type: String
+    },
     bio:{
         type: String,
         required: true

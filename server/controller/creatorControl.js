@@ -184,6 +184,21 @@ const login = async(req,res,next)=>{
     }
     }
 
+    const editProfile = async(req,res,next)=>{
+        try{
+
+            const userBody = req.body
+            const newProfile = await creatorSchema.findByIdAndUpdate(req.user.id,userBody,{new:true})
+            if(newProfile){
+                res.json(newProfile)
+            }
+        }
+
+        catch(error){
+            console.log(error)
+        }
+    }
+
     const getAvatar = async(req,res,next)=>{
         try{
             console.log('i a in')
@@ -281,4 +296,4 @@ const login = async(req,res,next)=>{
     
 
 
-    module.exports = {register,login,deleteUser,userSearch,creatorVerification,getme,getAvatar}
+    module.exports = {register,login,deleteUser,userSearch,creatorVerification,getme,getAvatar,editProfile}
