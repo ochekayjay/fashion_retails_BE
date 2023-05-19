@@ -73,6 +73,7 @@ router.post('/register',upload.single('avatar') ,async(req,res,next)=>{
             console.log('error here')
             //throw new errorClass('Fill all fields',400)
         }
+        console.log(req.body)
        const {Username,Password,Email,name,bio} = req.body
        const exisitingEmail = await creatorSchema.findOne({Email})
        const exisitingUsername = await creatorSchema.findOne({Username})
@@ -162,7 +163,7 @@ router.get('/search',authorizer,userSearch)
 router.get('/verifyEmail/:token',creatorVerification)
 router.delete('/delete',authorizer,deleteUser)
 router.get('/avatar/:userId',getAvatar)
-router.post('/editProfile',authorizer,editProfile)
+router.post('/editProfile',upload.single('avatar'),authorizer,editProfile)
 router.get('/personal/:userId',authorizer,getme)
 
 module.exports = router

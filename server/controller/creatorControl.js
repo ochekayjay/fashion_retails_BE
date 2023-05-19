@@ -7,6 +7,7 @@ const nodemailer = require('nodemailer')
 const multer = require('multer')
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const { S3Client, GetObjectCommand, PutObjectCommand } = require("@aws-sdk/client-s3");
+const crypto = require('crypto')
 
 
 
@@ -29,6 +30,15 @@ const s3 = new S3Client({
   },
   region: bucketRegion
 })
+
+
+//storage objects for user editing
+const storage = multer.memoryStorage()
+const upload = multer({ storage: storage })
+
+
+//create random image names
+const imagenameCreator = (bytes=32)=>{ return crypto.randomBytes(bytes).toString('hex')}
 
 const creatorVerification = async (req,res,next)=>{
     try{
@@ -187,10 +197,32 @@ const login = async(req,res,next)=>{
     const editProfile = async(req,res,next)=>{
         try{
 
-            const userBody = req.body
+            const params = {
+                Bucket : bucketName,
+                Key : imagenameCreator(),
+                Body : req.file.buffer,
+                ContentType : req.file.mimetype
+               }
+
+               const command = new PutObjectCommand(params)
+
+               await s3.send(command)
+
+            console.log('we are in')
+            console.log(req.body.bio)
+            const userBody = {...req.body,avatarName:params?.Key}
+            console.log(userBody)
             const newProfile = await creatorSchema.findByIdAndUpdate(req.user.id,{ $set: userBody},{new:true})
-            if(newProfile){
-                res.json(newProfile)
+            const getObjectParams = {
+                Bucket: bucketName,
+                Key: newProfile.avatarName
+            }
+            const commandGet = new GetObjectCommand(getObjectParams);
+            const url = await getSignedUrl(s3, commandGet, { expiresIn: 3600*5 })
+            
+            const updatedProfile = {...newProfile,avatarUrl:url}
+            if(updatedProfile){
+                res.json(updatedProfile)
             }
         }
 
@@ -231,7 +263,7 @@ const login = async(req,res,next)=>{
             const command = new GetObjectCommand(getObjectParams);
             const url = await getSignedUrl(s3, command, { expiresIn: 3600*5 });
 
-            res.json({
+            const resp = {
                 _id:exisitingUser.id,
             Username:exisitingUser.Username,
             name:exisitingUser.name,
@@ -239,7 +271,11 @@ const login = async(req,res,next)=>{
             avatarLink:url,
             status:'successful',
             color: exisitingUser.backgroundColor,
-            })
+            bio: exisitingUser.bio
+            }
+
+            console.log(resp)
+            res.json(resp)
 
 
         }
