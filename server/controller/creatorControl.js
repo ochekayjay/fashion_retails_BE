@@ -196,7 +196,8 @@ const login = async(req,res,next)=>{
 
     const editProfile = async(req,res,next)=>{
         try{
-
+            //console.log(`${req.file} checking out`)
+            if(req.file?.buffer){
             const params = {
                 Bucket : bucketName,
                 Key : imagenameCreator(),
@@ -227,6 +228,12 @@ const login = async(req,res,next)=>{
               };
             if(modifiedDocument){
                 res.json(modifiedDocument)
+            }}
+
+            else{
+                const userBody = {...req.body}
+                let newProfile = await creatorSchema.findByIdAndUpdate(req.user.id,{ $set: userBody},{upsert: true,new:true})
+                res.json(newProfile)
             }
         }
 
