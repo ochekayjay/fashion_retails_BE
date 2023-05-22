@@ -275,7 +275,8 @@ const login = async(req,res,next)=>{
             avatarLink:url,
             status:'successful',
             color: exisitingUser.backgroundColor,
-            bio: exisitingUser.bio
+            bio: exisitingUser.bio,
+            hashtag: exisitingUser.hashtag
             }
 
             console.log(resp)
