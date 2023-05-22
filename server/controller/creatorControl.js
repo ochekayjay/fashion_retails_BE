@@ -212,7 +212,7 @@ const login = async(req,res,next)=>{
             console.log(req.body.bio)
             const userBody = {...req.body,avatarName:params?.Key}
             console.log(userBody)
-            const newProfile = await creatorSchema.findByIdAndUpdate(req.user.id,{ $set: userBody},{upsert: true,new:true})
+            let newProfile = await creatorSchema.findByIdAndUpdate(req.user.id,{ $set: userBody},{upsert: true,new:true})
             const getObjectParams = {
                 Bucket: bucketName,
                 Key: newProfile.avatarName
@@ -220,10 +220,9 @@ const login = async(req,res,next)=>{
             const commandGet = new GetObjectCommand(getObjectParams);
             const url = await getSignedUrl(s3, commandGet, { expiresIn: 3600*5 })
             
-            const updatedProfile = {...newProfile,avatarUrl:url}
-            if(updatedProfile){
-                res.json(updatedProfile)
-            }
+            newProfile[avatarUrl] = url
+            res.json(newProfile)
+            
         }
 
         catch(error){
