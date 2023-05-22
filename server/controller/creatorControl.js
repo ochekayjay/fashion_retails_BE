@@ -212,7 +212,7 @@ const login = async(req,res,next)=>{
             console.log(req.body.bio)
             const userBody = {...req.body,avatarName:params?.Key}
             console.log(userBody)
-            const newProfile = await creatorSchema.findByIdAndUpdate(req.user.id,{ $set: userBody},{new:true})
+            const newProfile = await creatorSchema.findByIdAndUpdate(req.user.id,{ $set: userBody},{upsert: true,new:true})
             const getObjectParams = {
                 Bucket: bucketName,
                 Key: newProfile.avatarName

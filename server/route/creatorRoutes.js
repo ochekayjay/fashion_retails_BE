@@ -68,22 +68,25 @@ const generateTokenEmailVerification = (id) =>{
 
 router.post('/register',upload.single('avatar') ,async(req,res,next)=>{
     try{
-        if(!req.body.Email || !req.body.Password || !req.body.Username || !req.body.name || req.body.bio){
+      //console.log(`${req.body} outside if`)
+      //console.log(req.file.buffer)
+      console.log(JSON.stringify(req.body))
+        if(!req.body.Email || !req.body.Password || !req.body.Username || !req.body.name || !req.body.bio){
             res.status(400)
-            console.log('error here')
+            console.log('error here a')
             //throw new errorClass('Fill all fields',400)
         }
-        console.log(req.body)
+        //console.log(`${req.body} after if`)
        const {Username,Password,Email,name,bio} = req.body
        const exisitingEmail = await creatorSchema.findOne({Email})
        const exisitingUsername = await creatorSchema.findOne({Username})
        if(exisitingEmail || exisitingUsername){
            if(exisitingEmail){
-            console.log('error here')
+            console.log('error here b')
             //throw new errorClass('Email already exists',404)
            }
            else{
-            console.log('error here')
+            console.log('error here c')
             //throw new errorClass('Username already exists',405)
            }
            
