@@ -231,8 +231,10 @@ const login = async(req,res,next)=>{
             }}
 
             else{
+                console.log(req.body)
                 const userBody = {...req.body}
                 let newProfile = await creatorSchema.findByIdAndUpdate(req.user.id,{ $set: userBody},{upsert: true,new:true})
+                console.log(newProfile)
                 res.json(newProfile)
             }
         }
