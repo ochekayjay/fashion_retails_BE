@@ -45,8 +45,8 @@ const createContent = async (req,res,next)=>{
         const params = {
             Bucket : bucketName,
             Key : imagenameCreator(),
-            Body : req.file.buffer,
-            ContentType : req.file.mimetype
+            Body : req.compressed,
+            ContentType : webp
            }
 
            const command = new PutObjectCommand(params)
