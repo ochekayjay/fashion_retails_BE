@@ -33,6 +33,10 @@ const content = mongoose.Schema({
             companyName:{
                 type: String,
             },
+
+            link:{
+                type: String,
+            },
             itemNumber:{
                 type: Number,
             },
