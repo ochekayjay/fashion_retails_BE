@@ -13,13 +13,16 @@ const content = mongoose.Schema({
         type: String
     },
     hashtag:{
-        type: String
+        type: String,
+        index: true
     },
     title:{
-        type: String
+        type: String,
+        index: true
     },
     projectDescription:{
-        type: String
+        type: String,
+        index: true
     },
     itemsArray:[
         {
@@ -61,5 +64,6 @@ const content = mongoose.Schema({
     timestamps :true
 })
 
+content.index([{ projectDescription: 'text'},{ title: 'text'},{ hashtag: 'text'}])
 //content.index([{ Username: 'text'},{bio:'text'},{name:'text'}])
 module.exports = mongoose.model('Content',content)
