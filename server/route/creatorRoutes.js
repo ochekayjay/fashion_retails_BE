@@ -8,6 +8,7 @@ const nodemailer = require('nodemailer')
 const multer = require('multer')
 const dotenv = require('dotenv')
 const crypto = require('crypto')
+const sharp = require('sharp')
 const {S3Client,PutObjectCommand} = require('@aws-sdk/client-s3')
 
 //creator verification
@@ -16,6 +17,24 @@ const {S3Client,PutObjectCommand} = require('@aws-sdk/client-s3')
 
 
 
+
+const optimizeImage = async(req,res,next)=>{
+  if(req?.file){
+
+    const image = req.file;
+  const imageBuffer = image.buffer;
+  
+  const compression = 30; // Set your desired compression value
+  const compressedImageData = await sharp(imageBuffer)
+  .webp({ quality: compression }) // Convert to WebP format with the desired quality
+  .toBuffer(); 
+  
+  console.log(compressedImageData)
+  req.compressed = compressedImageData;
+  }
+
+next()
+}
 
 
 //create random image names
@@ -166,7 +185,7 @@ router.get('/search',authorizer,userSearch)
 router.get('/verifyEmail/:token',creatorVerification)
 router.delete('/delete',authorizer,deleteUser)
 router.get('/avatar/:userId',getAvatar)
-router.post('/editProfile',upload.single('avatar'),authorizer,editProfile)
+router.post('/editProfile',authorizer,upload.single('avatar'),optimizeImage,editProfile)
 router.get('/personal/:userId',authorizer,getme)
 
 module.exports = router

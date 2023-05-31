@@ -197,12 +197,12 @@ const login = async(req,res,next)=>{
     const editProfile = async(req,res,next)=>{
         try{
             //console.log(`${req.file} checking out`)
-            if(req.file?.buffer){
+            if(req?.compressed){
             const params = {
                 Bucket : bucketName,
                 Key : imagenameCreator(),
-                Body : req.file.buffer,
-                ContentType : req.file.mimetype
+                Body : req.compressed,
+                ContentType :'image/webp'
                }
 
                const command = new PutObjectCommand(params)
