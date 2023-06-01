@@ -3,6 +3,8 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const errorClass = require('./errorControl')
 const contentSchema = require('../model/contentSchema')
+const creatorSchema = require('../model/creatorSchema')
+const {getme} = require('../controller/creatorControl')
 const nodemailer = require('nodemailer')
 const multer = require('multer')
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
@@ -71,6 +73,62 @@ const createContent = async (req,res,next)=>{
     }
 }
 
+const getUserContents = async(req,res,next)=>{
 
-module.exports = {createContent}
+    try{
+
+        const UserArray = []
+
+        const exisitingUser = await creatorSchema.findById(req.user.id)
+        const getObjectParams = {
+            Bucket: bucketName,
+            Key: exisitingUser.avatarName
+        }
+        const command = new GetObjectCommand(getObjectParams);
+        const url = await getSignedUrl(s3, command, { expiresIn: 3600*5 });
+
+        const userDetail = {
+            _id:exisitingUser.id,
+        Username:exisitingUser.Username,
+        name:exisitingUser.name,
+        Email:exisitingUser.Email,
+        avatarLink:url,
+        status:'successful',
+        color: exisitingUser.backgroundColor,
+        bio: exisitingUser.bio,
+        hashtag: exisitingUser.hashtag
+        }
+
+        const data = await contentSchema.find({creator :req.user.id})
+    
+    
+        for(let i=0;i<data.length;i++){
+            let singleItem = {...data[i].toObject()}
+    
+            console.log(singleItem)
+            const getObjectParams = {
+                Bucket: bucketName,
+                Key: data[i].imageName
+            }
+            const command = new GetObjectCommand(getObjectParams);
+            const url = await getSignedUrl(s3, command, { expiresIn: 3600*5 });
+            singleItem.imageLink = url
+    
+            UserArray.unshift(singleItem)
+        }
+    
+
+
+
+res.json({userDetail,userImages:UserArray})
+}
+
+catch(error){
+    console.log(error)
+}
+}
+
+
+
+module.exports = {createContent,getUserContents}
 

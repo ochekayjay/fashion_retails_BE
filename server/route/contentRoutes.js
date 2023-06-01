@@ -1,4 +1,4 @@
-const {createContent} = require('../controller/contentController')
+const {createContent,getUserContents} = require('../controller/contentController')
 const router = require('express').Router()
 const authorizer = require('../middlewares/authorizeUser')
 const bcrypt = require('bcryptjs')
@@ -32,6 +32,7 @@ const optimizeImage = async(req,res,next)=>{
 
 
 router.post('/creation',authorizer,upload.single('avatar'),optimizeImage ,createContent)
+router.get('/user',authorizer,getUserContents)
 
 
 module.exports = router
