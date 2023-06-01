@@ -175,7 +175,10 @@ const login = async(req,res,next)=>{
             avatarLink:url,
             status:'successful',
             color: exisitingUser.backgroundColor,
-            Token: generateTokenAuthorization(exisitingUser._id)})
+            Token: generateTokenAuthorization(exisitingUser._id),
+            bio: exisitingUser.bio,
+            hashtag: exisitingUser.hashtag
+        })
        }
 
        else{
