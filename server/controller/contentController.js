@@ -73,6 +73,29 @@ const createContent = async (req,res,next)=>{
     }
 }
 
+const getOneContent = async(req,res,next)=>{
+    try{
+        const content = await contentSchema.findById(req.params.id)
+
+        const getObjectParams = {
+            Bucket: bucketName,
+            Key: content.imageName
+        }
+        const command = new GetObjectCommand(getObjectParams);
+        const url = await getSignedUrl(s3, command, { expiresIn: 3600*5 });
+
+        let contentObj = content.toObject()
+        contentObj.imageLink = url
+
+        res.json({content:contentObj})
+        
+
+    }
+    catch(error){
+        console.log(error)
+    }
+}
+
 const getUserContents = async(req,res,next)=>{
 
     try{
@@ -130,5 +153,5 @@ catch(error){
 
 
 
-module.exports = {createContent,getUserContents}
+module.exports = {createContent,getUserContents,getOneContent}
 
