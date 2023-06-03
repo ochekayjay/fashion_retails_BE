@@ -75,6 +75,28 @@ const createContent = async (req,res,next)=>{
 
 const getOneContent = async(req,res,next)=>{
     try{
+
+        const exisitingUser = await creatorSchema.findById(req.user.id)
+        const getObjectParamsOne = {
+            Bucket: bucketName,
+            Key: exisitingUser.avatarName
+        }
+        const commandOne = new GetObjectCommand(getObjectParamsOne);
+        const avatarUrl = await getSignedUrl(s3, commandOne, { expiresIn: 3600*5 });
+
+        const userDetail = {
+            _id:exisitingUser.id,
+        Username:exisitingUser.Username,
+        name:exisitingUser.name,
+        Email:exisitingUser.Email,
+        avatarLink:avatarUrl,
+        status:'successful',
+        color: exisitingUser.backgroundColor,
+        bio: exisitingUser.bio,
+        hashtag: exisitingUser.hashtag
+        }
+
+
         const content = await contentSchema.findById(req.params.id)
 
         const getObjectParams = {
@@ -87,7 +109,7 @@ const getOneContent = async(req,res,next)=>{
         let contentObj = content.toObject()
         contentObj.imageLink = url
 
-        res.json({content:contentObj})
+        res.json({content:contentObj,userDetail})
         
 
     }
