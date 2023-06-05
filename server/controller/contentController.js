@@ -117,6 +117,60 @@ const getOneContent = async(req,res,next)=>{
         console.log(error)
     }
 }
+const searchUserContent = async(req,res,next)=>{
+    try{
+        
+
+        const UserArray = []
+
+        const exisitingUser = await creatorSchema.findById(req.query.creator)
+        const getObjectParams = {
+            Bucket: bucketName,
+            Key: exisitingUser.avatarName
+        }
+        const command = new GetObjectCommand(getObjectParams);
+        const url = await getSignedUrl(s3, command, { expiresIn: 3600*5 });
+
+        const userDetail = {
+            _id:exisitingUser.id,
+        Username:exisitingUser.Username,
+        name:exisitingUser.name,
+        Email:exisitingUser.Email,
+        avatarLink:url,
+        status:'successful',
+        color: exisitingUser.backgroundColor,
+        bio: exisitingUser.bio,
+        hashtag: exisitingUser.hashtag
+        }
+
+        const foundContent = await contentSchema.find({creator:req.query.creator,hashtag:req.query.hashtag})
+    
+    
+        for(let i=0;i<foundContent.length;i++){
+            let singleItem = {...foundContent[i].toObject()}
+    
+            console.log(singleItem)
+            const getObjectParams = {
+                Bucket: bucketName,
+                Key: foundContent[i].imageName
+            }
+            const command = new GetObjectCommand(getObjectParams);
+            const url = await getSignedUrl(s3, command, { expiresIn: 3600*5 });
+            singleItem.imageLink = url
+    
+            UserArray.unshift(singleItem)
+        }
+    
+
+
+
+res.json({userDetail,userImages:UserArray})
+        console.log(foundContent)
+    }
+    catch(error){
+        console.log(error)
+    }
+}
 
 const editProjects = async(req,res,next)=>{
     try{
@@ -191,5 +245,5 @@ catch(error){
 
 
 
-module.exports = {createContent,getUserContents,getOneContent,editProjects}
+module.exports = {createContent,getUserContents,getOneContent,editProjects,searchUserContent}
 
