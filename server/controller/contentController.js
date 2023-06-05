@@ -118,6 +118,22 @@ const getOneContent = async(req,res,next)=>{
     }
 }
 
+const editProjects = async(req,res,next)=>{
+    try{
+        const userBody = req.body
+        const updatedProject = await contentSchema.findByIdAndUpdate(req.params.id,{ $set: userBody},{upsert: true,new:true})
+        //console.log(JSON.stringify(updatedProject))
+        if(updatedProject.projectDescription !==''){
+            res.json({verified:true})
+        }
+    }
+
+    catch(error){
+        console.log(error)
+    }
+}
+
+
 const getUserContents = async(req,res,next)=>{
 
     try{
@@ -175,5 +191,5 @@ catch(error){
 
 
 
-module.exports = {createContent,getUserContents,getOneContent}
+module.exports = {createContent,getUserContents,getOneContent,editProjects}
 

@@ -13,7 +13,7 @@ const content = mongoose.Schema({
         type: String
     },
     hashtag:{
-        type: String,
+        type: [String],
         index: true
     },
     title:{
