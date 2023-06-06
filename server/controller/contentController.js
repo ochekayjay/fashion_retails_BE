@@ -122,7 +122,8 @@ const searchUserContent = async(req,res,next)=>{
         
 
         const UserArray = []
-
+        console.log(req.query.creator)
+        console.log(req.query.hashtag)
         const exisitingUser = await creatorSchema.findById(req.query.creator)
         const getObjectParams = {
             Bucket: bucketName,
@@ -145,7 +146,7 @@ const searchUserContent = async(req,res,next)=>{
 
         const foundContent = await contentSchema.find({creator:req.query.creator,hashtag:req.query.hashtag})
     
-    
+        //console.log(foun)
         for(let i=0;i<foundContent.length;i++){
             let singleItem = {...foundContent[i].toObject()}
     
@@ -171,6 +172,42 @@ res.json({userDetail,userImages:UserArray})
         console.log(error)
     }
 }
+
+
+//search text
+
+const querySearchText = async(req,res,next)=>{
+    console.log(req.params.user)
+       //console.log(`${req.query.message} value`)
+       try{
+           
+           await contentSchema.find({creator:req.params.creator}).lean()
+           
+       
+           const foundData = await contentSchema.aggregate([
+        
+           {$match:
+               {$text: 
+                   {$search: req.query.message,
+                       $caseSensitive: false}} }
+       
+       ])       
+
+       console.log(foundData)
+       if(foundData[0]){
+        res.json({textdata:foundData,state:true})
+           
+       }
+       else{
+        res.json({state:false,message:"text not found!"})
+   
+   }
+   }
+       catch(error){
+           next(error)
+       }
+   }
+
 
 const editProjects = async(req,res,next)=>{
     try{
@@ -245,5 +282,5 @@ catch(error){
 
 
 
-module.exports = {createContent,getUserContents,getOneContent,editProjects,searchUserContent}
+module.exports = {createContent,getUserContents,getOneContent,editProjects,searchUserContent,querySearchText}
 

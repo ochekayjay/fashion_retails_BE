@@ -1,4 +1,4 @@
-const {createContent,getUserContents,getOneContent,editProjects,searchUserContent} = require('../controller/contentController')
+const {createContent,getUserContents,getOneContent,editProjects,searchUserContent,querySearchText} = require('../controller/contentController')
 const router = require('express').Router()
 const authorizer = require('../middlewares/authorizeUser')
 const bcrypt = require('bcryptjs')
@@ -34,7 +34,8 @@ const optimizeImage = async(req,res,next)=>{
 router.post('/creation',authorizer,upload.single('avatar'),optimizeImage ,createContent)
 router.post('/creation/edit/:id',authorizer,editProjects)
 router.get('/user',authorizer,getUserContents)
-router.get('/user/search',searchUserContent)
+router.get('/user/hashtag',searchUserContent)
+router.get('/user/search/:creator',querySearchText)
 router.get('/user/:id',authorizer,getOneContent)
 
 
