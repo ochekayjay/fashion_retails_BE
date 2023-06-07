@@ -126,8 +126,7 @@ const searchUserContent = async(req,res,next)=>{
         
 
         const UserArray = []
-        console.log(req.query.creator)
-        console.log(req.query.hashtag)
+      
         const exisitingUser = await creatorSchema.findById(req.query.creator)
         const getObjectParams = {
             Bucket: bucketName,
@@ -154,7 +153,7 @@ const searchUserContent = async(req,res,next)=>{
         for(let i=0;i<foundContent.length;i++){
             let singleItem = {...foundContent[i].toObject()}
     
-            console.log(singleItem)
+    
             const getObjectParams = {
                 Bucket: bucketName,
                 Key: foundContent[i].imageName
@@ -170,7 +169,7 @@ const searchUserContent = async(req,res,next)=>{
 
 
 res.json({userDetail,userImages:UserArray})
-        console.log(foundContent)
+        
     }
     catch(error){
         console.log(error)
@@ -369,7 +368,7 @@ const getUserContents = async(req,res,next)=>{
         for(let i=0;i<data.length;i++){
             let singleItem = {...data[i].toObject()}
     
-            console.log(singleItem)
+            
             const getObjectParams = {
                 Bucket: bucketName,
                 Key: data[i].imageName
