@@ -118,6 +118,9 @@ const getOneContent = async(req,res,next)=>{
         console.log(error)
     }
 }
+
+
+
 const searchUserContent = async(req,res,next)=>{
     try{
         
@@ -175,6 +178,40 @@ res.json({userDetail,userImages:UserArray})
 }
 
 
+
+
+const HashAllContents = async(req,res,next)=>{
+    try{
+        const UserArray = []
+        const foundContent = await contentSchema.find({hashtag:req.query.hashtag})
+    
+        //console.log(foun)
+        for(let i=0;i<foundContent.length;i++){
+            let singleItem = {...foundContent[i].toObject()}
+    
+            console.log(singleItem)
+            const getObjectParams = {
+                Bucket: bucketName,
+                Key: foundContent[i].imageName
+            }
+            const command = new GetObjectCommand(getObjectParams);
+            const url = await getSignedUrl(s3, command, { expiresIn: 3600*5 });
+            singleItem.imageLink = url
+    
+            UserArray.unshift(singleItem)
+        }
+
+res.json({userImages:UserArray})
+        console.log(foundContent)
+    }
+    catch(error){
+        console.log(error)
+    }
+}
+
+
+
+
 //search text
 
 const querySearchText = async(req,res,next)=>{
@@ -208,6 +245,43 @@ const querySearchText = async(req,res,next)=>{
            next(error)
        }
    }
+
+
+
+   
+const querySearchAll = async(req,res,next)=>{
+    console.log(req.params.user)
+       //console.log(`${req.query.message} value`)
+       try{
+           
+           await contentSchema.find().lean()
+           
+       
+           const foundData = await contentSchema.aggregate([
+        
+           {$match:
+               {$text: 
+                   {$search: req.query.message,
+                       $caseSensitive: false}} }
+       
+       ])       
+
+       console.log(foundData)
+       if(foundData[0]){
+        res.json({textdata:foundData,state:true})
+           
+       }
+       else{
+        res.json({state:false,message:"text not found!"})
+   
+   }
+   }
+       catch(error){
+           next(error)
+       }
+   }
+
+
 
 
 const editProjects = async(req,res,next)=>{
@@ -320,5 +394,5 @@ catch(error){
 
 
 
-module.exports = {createContent,getAllContents,getUserContents,getOneContent,editProjects,searchUserContent,querySearchText}
+module.exports = {createContent,getAllContents,getUserContents,getOneContent,editProjects,querySearchAll,HashAllContents,searchUserContent,querySearchText}
 
