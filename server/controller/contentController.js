@@ -76,28 +76,28 @@ const createContent = async (req,res,next)=>{
 const getOneContent = async(req,res,next)=>{
     try{
 
-        const exisitingUser = await creatorSchema.findById(req.user.id)
+         const content = await contentSchema.findById(req.params.contentId).populate('creator')
+
+        const userData = content.creator
+
         const getObjectParamsOne = {
             Bucket: bucketName,
-            Key: exisitingUser.avatarName
+            Key: userData.avatarName
         }
         const commandOne = new GetObjectCommand(getObjectParamsOne);
         const avatarUrl = await getSignedUrl(s3, commandOne, { expiresIn: 3600*5 });
 
         const userDetail = {
-            _id:exisitingUser.id,
-        Username:exisitingUser.Username,
-        name:exisitingUser.name,
-        Email:exisitingUser.Email,
+            _id:userData.id,
+        Username:userData.Username,
+        name:userData.name,
+        Email:userData.Email,
         avatarLink:avatarUrl,
         status:'successful',
-        color: exisitingUser.backgroundColor,
-        bio: exisitingUser.bio,
-        hashtag: exisitingUser.hashtag
+        color: userData.backgroundColor,
+        bio: userData.bio,
+        hashtag: userData.hashtag
         }
-
-
-        const content = await contentSchema.findById(req.params.id)
 
         const getObjectParams = {
             Bucket: bucketName,
@@ -108,6 +108,7 @@ const getOneContent = async(req,res,next)=>{
 
         let contentObj = content.toObject()
         contentObj.imageLink = url
+
 
         res.json({content:contentObj,userDetail})
         
@@ -268,7 +269,7 @@ const getUserContents = async(req,res,next)=>{
 
         const UserArray = []
 
-        const exisitingUser = await creatorSchema.findById(req.user.id)
+        const exisitingUser = await creatorSchema.findById(req.params.creatorId)
         const getObjectParams = {
             Bucket: bucketName,
             Key: exisitingUser.avatarName
@@ -288,7 +289,7 @@ const getUserContents = async(req,res,next)=>{
         hashtag: exisitingUser.hashtag
         }
 
-        const data = await contentSchema.find({creator :req.user.id})
+        const data = await contentSchema.find({creator :req.params.creatorId})
     
     
         for(let i=0;i<data.length;i++){

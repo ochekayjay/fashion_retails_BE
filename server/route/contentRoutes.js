@@ -34,10 +34,10 @@ const optimizeImage = async(req,res,next)=>{
 router.post('/creation',authorizer,upload.single('avatar'),optimizeImage ,createContent)
 router.post('/creation/edit/:id',authorizer,editProjects)
 router.get('/allProjects',getAllContents)
-router.get('/user',authorizer,getUserContents)
+router.get('/user/contents/:creatorId',getUserContents)
 router.get('/user/hashtag',searchUserContent)
 router.get('/user/search/:creator',querySearchText)
-router.get('/user/:id',authorizer,getOneContent)
+router.get('/user/singlecontent/:contentId',getOneContent)
 
 
 
