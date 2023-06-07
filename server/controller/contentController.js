@@ -225,6 +225,43 @@ const editProjects = async(req,res,next)=>{
 }
 
 
+
+
+
+const getAllContents = async(req,res,next)=>{
+
+    try{
+
+        const UserArray = []
+
+        const data = await contentSchema.find()
+    
+    
+        for(let i=0;i<data.length;i++){
+            let singleItem = {...data[i].toObject()}
+    
+            console.log(singleItem)
+            const getObjectParams = {
+                Bucket: bucketName,
+                Key: data[i].imageName
+            }
+            const command = new GetObjectCommand(getObjectParams);
+            const url = await getSignedUrl(s3, command, { expiresIn: 3600*5 });
+            singleItem.imageLink = url
+    
+            UserArray.unshift(singleItem)
+        }
+        res.json({userImages:UserArray})
+        }
+
+        catch(error){
+            console.log(error)
+        }
+        }
+
+
+
+
 const getUserContents = async(req,res,next)=>{
 
     try{
@@ -282,5 +319,5 @@ catch(error){
 
 
 
-module.exports = {createContent,getUserContents,getOneContent,editProjects,searchUserContent,querySearchText}
+module.exports = {createContent,getAllContents,getUserContents,getOneContent,editProjects,searchUserContent,querySearchText}
 
