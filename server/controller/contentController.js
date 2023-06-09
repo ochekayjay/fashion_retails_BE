@@ -8,7 +8,7 @@ const {getme} = require('../controller/creatorControl')
 const nodemailer = require('nodemailer')
 const multer = require('multer')
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
-const { S3Client, GetObjectCommand, PutObjectCommand } = require("@aws-sdk/client-s3");
+const { S3Client, GetObjectCommand, PutObjectCommand, DeleteObjectCommand} = require("@aws-sdk/client-s3");
 const crypto = require('crypto')
 const dotenv = require('dotenv')
 
@@ -391,7 +391,24 @@ catch(error){
 }
 }
 
+const deleteProject = async (req,res,next)=>{
+    const data = await contentSchema.findById(req.params.id)
+
+    const getObjectParams = {
+        Bucket: bucketName,
+        Key: data.imageName
+    }
+
+    const command = new DeleteObjectCommand(getObjectParams)
+
+    await s3.send(command)
+
+    const newData = await contentSchema.findByIdAndDelete(req.params.id)
+    res.json(newData)
 
 
-module.exports = {createContent,getAllContents,getUserContents,getOneContent,editProjects,querySearchAll,HashAllContents,searchUserContent,querySearchText}
+}
+
+
+module.exports = {createContent,getAllContents,getUserContents,deleteProject,getOneContent,editProjects,querySearchAll,HashAllContents,searchUserContent,querySearchText}
 
