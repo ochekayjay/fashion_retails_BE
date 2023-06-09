@@ -41,7 +41,7 @@ const imagenameCreator = (bytes=32)=>{ return crypto.randomBytes(bytes).toString
 const createContent = async (req,res,next)=>{
 
     try{
-        const {title,photoDescription,hashtag,itemArray,backgroundColor} = req.body
+        const {title,projectDescription,hashtag,itemArray,backgroundColor} = req.body
         const items = JSON.parse(itemArray)
 
         const params = {
@@ -61,7 +61,7 @@ const createContent = async (req,res,next)=>{
             backgroundColor: backgroundColor,
             hashtag: hashtag,
             title:title,
-            projectDescription: photoDescription,
+            projectDescription: projectDescription,
             itemsArray:items,
             
         })
