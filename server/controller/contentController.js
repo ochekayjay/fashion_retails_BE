@@ -334,7 +334,41 @@ const getAllContents = async(req,res,next)=>{
         }
 
 
+const hashBrowse = async(req,res,next)=>{
+    const hashArray = ['#dinner','#women', '#casual','#outdoor','#men', '#office','#freestyle','#beach','#jewelries','#crotchet','#wig','#rings']
+    let hashExplore = []
+    let hashWindow = []
 
+    for(let i=0;i<hashArray.length;i++){
+      let hashHolder =  await contentSchema.aggregate([
+            { $match: { hashtag: hashArray[i] } },
+            { $sample: { size: 2 } },
+            { $limit: 2 }
+          ])
+          console.log(hashHolder)
+          for(let i=0;i<hashHolder.length;i++){
+            let singleItem = {...hashHolder[i]}
+    
+            
+            const getObjectParams = {
+                Bucket: bucketName,
+                Key: hashHolder[i].imageName
+            }
+            const command = new GetObjectCommand(getObjectParams);
+            const url = await getSignedUrl(s3, command, { expiresIn: 3600*5 });
+            singleItem.imageLink = url
+    
+            hashWindow.unshift(singleItem)
+        }
+          hashExplore.unshift(hashWindow)
+          hashWindow = []
+    }
+
+    res.json(hashExplore)
+    console.log(hashExplore)
+
+
+}
 
 const getUserContents = async(req,res,next)=>{
 
@@ -410,5 +444,5 @@ const deleteProject = async (req,res,next)=>{
 }
 
 
-module.exports = {createContent,getAllContents,getUserContents,deleteProject,getOneContent,editProjects,querySearchAll,HashAllContents,searchUserContent,querySearchText}
+module.exports = {createContent,getAllContents,getUserContents,deleteProject,getOneContent,editProjects,querySearchAll,HashAllContents,searchUserContent,querySearchText,hashBrowse}
 
