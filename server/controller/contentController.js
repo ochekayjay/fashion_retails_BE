@@ -188,7 +188,7 @@ const HashAllContents = async(req,res,next)=>{
         for(let i=0;i<foundContent.length;i++){
             let singleItem = {...foundContent[i].toObject()}
     
-            console.log(singleItem)
+            
             const getObjectParams = {
                 Bucket: bucketName,
                 Key: foundContent[i].imageName
@@ -201,7 +201,7 @@ const HashAllContents = async(req,res,next)=>{
         }
 
 res.json({userImages:UserArray})
-        console.log(foundContent)
+
     }
     catch(error){
         console.log(error)
@@ -214,7 +214,7 @@ res.json({userImages:UserArray})
 //search text
 
 const querySearchText = async(req,res,next)=>{
-    console.log(req.params.user)
+
        //console.log(`${req.query.message} value`)
        try{
            
@@ -230,7 +230,7 @@ const querySearchText = async(req,res,next)=>{
        
        ])       
 
-       console.log(foundData)
+    
        if(foundData[0]){
         res.json({textdata:foundData,state:true})
            
@@ -249,7 +249,7 @@ const querySearchText = async(req,res,next)=>{
 
    
 const querySearchAll = async(req,res,next)=>{
-    console.log(req.params.user)
+
        //console.log(`${req.query.message} value`)
        try{
            
@@ -265,7 +265,7 @@ const querySearchAll = async(req,res,next)=>{
        
        ])       
 
-       console.log(foundData)
+
        if(foundData[0]){
         res.json({textdata:foundData,state:true})
            
@@ -314,7 +314,7 @@ const getAllContents = async(req,res,next)=>{
         for(let i=0;i<data.length;i++){
             let singleItem = {...data[i].toObject()}
     
-            console.log(singleItem)
+        
             const getObjectParams = {
                 Bucket: bucketName,
                 Key: data[i].imageName
@@ -345,7 +345,7 @@ const hashBrowse = async(req,res,next)=>{
             { $sample: { size: 2 } },
             { $limit: 2 }
           ])
-          console.log(hashHolder)
+        
           for(let i=0;i<hashHolder.length;i++){
             let singleItem = {...hashHolder[i]}
     
@@ -365,7 +365,7 @@ const hashBrowse = async(req,res,next)=>{
     }
 
     res.json(hashExplore)
-    console.log(hashExplore)
+
 
 
 }
