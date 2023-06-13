@@ -337,7 +337,7 @@ const getAllContents = async(req,res,next)=>{
 const hashBrowse = async(req,res,next)=>{
     const hashArray = ['#dinner','#women', '#casual','#outdoor','#men', '#office','#freestyle','#beach','#jewelries','#crotchet','#wig','#rings']
     let hashExplore = []
-    let hashWindow = []
+
 
     for(let i=0;i<hashArray.length;i++){
       let hashHolder =  await contentSchema.aggregate([
@@ -346,23 +346,19 @@ const hashBrowse = async(req,res,next)=>{
             { $limit: 1 }
           ])
         
-          for(let i=0;i<hashHolder.length;i++){
-            let singleItem = {...hashHolder[i]}
+    
+            let singleItem = {...hashHolder[0]}
     
             
             const getObjectParams = {
                 Bucket: bucketName,
-                Key: hashHolder[i].imageName
+                Key: hashHolder[0].imageName
             }
             const command = new GetObjectCommand(getObjectParams);
             const url = await getSignedUrl(s3, command, { expiresIn: 3600*5 });
             singleItem.imageLink = url
             singleItem.hash = hashArray[i]
-    
-            hashWindow.unshift(singleItem)
-        }
-          hashExplore.unshift(hashWindow)
-          hashWindow = []
+          hashExplore.unshift(singleItem)
     }
 
     res.json(hashExplore)
