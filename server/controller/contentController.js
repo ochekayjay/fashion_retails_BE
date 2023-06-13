@@ -248,8 +248,8 @@ const querySearchText = async(req,res,next)=>{
 
 
    
-const querySearchAll = async(req,res,next)=>{
-
+const querySearchAllWithImg = async(req,res,next)=>{
+        let UserArray = []
        //console.log(`${req.query.message} value`)
        try{
            
@@ -267,20 +267,65 @@ const querySearchAll = async(req,res,next)=>{
 
 
        if(foundData[0]){
-        res.json({textdata:foundData,state:true})
+        for(let i=0;i<foundData.length;i++){
+            let singleItem = {...foundData[i]}
+    
+        
+            const getObjectParams = {
+                Bucket: bucketName,
+                Key: foundData[i].imageName
+            }
+            const command = new GetObjectCommand(getObjectParams);
+            const url = await getSignedUrl(s3, command, { expiresIn: 3600*5 });
+            singleItem.imageLink = url
+    
+            UserArray.unshift(singleItem)
+        }
+        res.json({UserSearch:UserArray,state:true})
            
        }
        else{
+
         res.json({state:false,message:"text not found!"})
    
    }
    }
        catch(error){
-           next(error)
+           console.log(error)
        }
    }
 
+   const querySearchAll = async(req,res,next)=>{
 
+    //console.log(`${req.query.message} value`)
+    try{
+        
+        await contentSchema.find().lean()
+        
+    
+        const foundData = await contentSchema.aggregate([
+     
+        {$match:
+            {$text: 
+                {$search: req.query.message,
+                    $caseSensitive: false}} }
+    
+    ])       
+
+
+    if(foundData[0]){
+     res.json({textdata:foundData,state:true})
+        
+    }
+    else{
+     res.json({state:false,message:"text not found!"})
+
+}
+}
+    catch(error){
+        next(error)
+    }
+}
 
 
 const editProjects = async(req,res,next)=>{
@@ -441,5 +486,5 @@ const deleteProject = async (req,res,next)=>{
 }
 
 
-module.exports = {createContent,getAllContents,getUserContents,deleteProject,getOneContent,editProjects,querySearchAll,HashAllContents,searchUserContent,querySearchText,hashBrowse}
+module.exports = {createContent,getAllContents,getUserContents,deleteProject,querySearchAllWithImg,getOneContent,editProjects,querySearchAll,HashAllContents,searchUserContent,querySearchText,hashBrowse}
 
