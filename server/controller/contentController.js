@@ -342,8 +342,8 @@ const hashBrowse = async(req,res,next)=>{
     for(let i=0;i<hashArray.length;i++){
       let hashHolder =  await contentSchema.aggregate([
             { $match: { hashtag: hashArray[i] } },
-            { $sample: { size: 2 } },
-            { $limit: 2 }
+            { $sample: { size: 1 } },
+            { $limit: 1 }
           ])
         
           for(let i=0;i<hashHolder.length;i++){
