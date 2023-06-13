@@ -357,6 +357,7 @@ const hashBrowse = async(req,res,next)=>{
             const command = new GetObjectCommand(getObjectParams);
             const url = await getSignedUrl(s3, command, { expiresIn: 3600*5 });
             singleItem.imageLink = url
+            singleItem.hash = hashArray[i]
     
             hashWindow.unshift(singleItem)
         }
