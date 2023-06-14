@@ -479,7 +479,9 @@ const deleteProject = async (req,res,next)=>{
 
     await s3.send(command)
 
-    const newData = await contentSchema.findByIdAndDelete(req.params.id)
+    await contentSchema.findByIdAndDelete(req.params.id)
+
+    const newData = await contentSchema.find({creator:req.user.id})
     res.json(newData)
 
 
