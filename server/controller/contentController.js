@@ -468,6 +468,7 @@ catch(error){
 }
 
 const deleteProject = async (req,res,next)=>{
+    let UserArray = []
     const data = await contentSchema.findById(req.params.id)
 
     const getObjectParams = {
@@ -482,7 +483,23 @@ const deleteProject = async (req,res,next)=>{
     await contentSchema.findByIdAndDelete(req.params.id)
 
     const newData = await contentSchema.find({creator:req.user.id})
-    res.json(newData)
+
+    for(let i=0;i<newData.length;i++){
+        let singleItem = {...newData[i].toObject()}
+
+    
+        const getObjectParams = {
+            Bucket: bucketName,
+            Key: newData[i].imageName
+        }
+        const command = new GetObjectCommand(getObjectParams);
+        const url = await getSignedUrl(s3, command, { expiresIn: 3600*5 });
+        singleItem.imageLink = url
+
+        UserArray.unshift(singleItem)
+    }
+    res.json({userImages:UserArray})
+    
 
 
 }
