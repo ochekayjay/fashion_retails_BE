@@ -7,6 +7,7 @@ const app = require('express')()
 const authorizer = require('./server/middlewares/authorizeUser')
 const creatorRoutes = require('./server/route/creatorRoutes')
 const contentRoutes = require('./server/route/contentRoutes')
+const promoRoutes = require('./server/route/promoRoutes')
 
 
 app.use(cors({
@@ -28,5 +29,6 @@ app.use(cors({
 
     app.use('/creator', creatorRoutes)
     app.use('/content', contentRoutes)
+    app.use('/promo',promoRoutes)
 
 app.listen(port, ()=> console.log( `in ${port}`))
