@@ -82,7 +82,7 @@ const getUserPromos = async(req,res,next)=>{
 
         const UserArray = []
 
-        const data = await contentSchema.find({creator :req.params.creatorId})
+        const data = await promoSchema.find({creator :req.params.creatorId})
     
     if(data[0]){
         for(let i=0;i<data.length;i++){

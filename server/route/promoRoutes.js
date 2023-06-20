@@ -34,3 +34,5 @@ const optimizeImage = async(req,res,next)=>{
 router.post('/creation',authorizer,upload.single('avatar'),optimizeImage ,createPromo)
 router.delete('/delete/:id',authorizer,deletePromo)
 router.get('/creator/:creatorId',getUserPromos)
+
+module.exports = router
