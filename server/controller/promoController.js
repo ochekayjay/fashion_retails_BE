@@ -83,7 +83,7 @@ const getUserPromos = async(req,res,next)=>{
         const UserArray = []
 
         const data = await promoSchema.find({creator :req.params.creatorId})
-    
+        console.log(data)
     if(data[0]){
         for(let i=0;i<data.length;i++){
             let singleItem = {...data[i].toObject()}

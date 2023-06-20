@@ -12,6 +12,9 @@ const promos = mongoose.Schema({
     promoDescription:{
         type: String
     },
+    imageName:{
+        type: String,
+    },
     link:{
         type: String,
     }
