@@ -9,6 +9,9 @@ const promos = mongoose.Schema({
     title:{
         type: String
     },
+    backgroundColor:{
+        type: String
+    },
     promoDescription:{
         type: String
     },
