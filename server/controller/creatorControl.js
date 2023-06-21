@@ -180,14 +180,18 @@ const login = async(req,res,next)=>{
         })
        }
 
-       else{
-        res.json({status:'no user'})
+       else if(exisitingUser._id){
+        res.json({status:'wrong password'})
 
         /**
          * 
          * res.send('User does not exist')
            throw new errorClass('User does not exist',400)
          */
+       }
+
+       else{
+        res.json({status:'No user'})
        }
     }
     
