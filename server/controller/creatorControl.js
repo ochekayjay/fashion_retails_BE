@@ -54,11 +54,11 @@ const creatorVerification = async (req,res,next)=>{
         verified:true
         })
         if(creatordata?.id){
-            res.redirect('https://fashion-retails-fe.vercel.app/verify/successful')
+            res.redirect('https://fashion-retails-fe-ashen.vercel.app//verify/successful')
             //res.send('link to congratulatory message')
         }
         else{
-            res.redirect('https://fashion-retails-fe.vercel.app/verify/failed')
+            res.redirect('https://fashion-retails-fe-ashen.vercel.app//verify/failed')
         }
     }
 }
