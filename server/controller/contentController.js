@@ -353,11 +353,11 @@ const getAllContents = async(req,res,next)=>{
 
         const UserArray = []
 
-        const data = await contentSchema.find()
-    
-    
+        //const data = await contentSchema.find()
+        const data = await contentSchema.aggregate([{ $sample: { size: 20 } }])
+        console.log(data)
         for(let i=0;i<data.length;i++){
-            let singleItem = {...data[i].toObject()}
+            let singleItem = {...data[i]}
     
         
             const getObjectParams = {
