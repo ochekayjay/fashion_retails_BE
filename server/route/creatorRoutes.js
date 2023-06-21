@@ -1,4 +1,4 @@
-const {login,deleteUser,userSearch,creatorVerification,getme,getAvatar, editProfile} = require('../controller/creatorControl')
+const {login,deleteUser,userSearch,creatorVerification,getme,getAvatar, editProfile,resendVerification} = require('../controller/creatorControl')
 const router = require('express').Router()
 const authorizer = require('../middlewares/authorizeUser')
 const bcrypt = require('bcryptjs')
@@ -80,7 +80,7 @@ const transporter = nodemailer.createTransport({
 
 //generate token for email verification
 const generateTokenEmailVerification = (id) =>{
-    return jwt.sign({id},'abc123',{expiresIn:'7m'})
+    return jwt.sign({id},'abc123',{expiresIn:'60m'})
 }
 
 
@@ -182,6 +182,7 @@ router.post('/register',upload.single('avatar') ,async(req,res,next)=>{
 
 router.post('/signin',login)
 router.get('/search',authorizer,userSearch)
+router.post('/reverify',resendVerification)
 router.get('/verifyEmail/:token',creatorVerification)
 router.delete('/delete',authorizer,deleteUser)
 router.get('/avatar/:userId',getAvatar)

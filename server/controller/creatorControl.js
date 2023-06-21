@@ -46,9 +46,9 @@ const creatorVerification = async (req,res,next)=>{
 
         //res.redirect('https://fashion-retails-fe.vercel.app/')
     const tok = req.params.token
-    console.log(tok)
+    
     const decoded = jwt.verify(tok,'abc123')
-    console.log(decoded)
+
     if(decoded){
         const creatordata = await creatorSchema.findByIdAndUpdate(decoded.id,{
         verified:true
@@ -120,7 +120,7 @@ try{
     if (error) {
       console.log(error);
     } else {
-      console.log('Email sent: ' + info.response);
+    
       res.json({verification:'mail sent'})
     }
   });
@@ -149,7 +149,6 @@ const login = async(req,res,next)=>{
     try{
         
         if(!req.body.Email || !req.body.Password ){
-            console.log('a')
              res.json({message:'Fill all fields'})
             //throw new errorClass('Fill all fields',400)
         }
@@ -159,7 +158,7 @@ const login = async(req,res,next)=>{
             if(!exisitingUser.verified){
                 res.json({status:'unverified'})
             }
-            console.log('in here')
+            
             const getObjectParams = {
                 Bucket: bucketName,
                 Key: exisitingUser.avatarName
@@ -212,12 +211,11 @@ const login = async(req,res,next)=>{
 
                await s3.send(command)
 
-            console.log('we are in')
-            console.log(req.body.bio)
+          
             const userBody = {...req.body,avatarName:params?.Key}
-            console.log(userBody)
+    
             let newProfile = await creatorSchema.findByIdAndUpdate(req.user.id,{ $set: userBody},{upsert: true,new:true})
-            console.log(`${JSON.stringify(newProfile)} first`)
+    
             const getObjectParams = {
                 Bucket: bucketName,
                 Key: newProfile.avatarName
@@ -234,10 +232,9 @@ const login = async(req,res,next)=>{
             }}
 
             else{
-                console.log(req.body)
                 const userBody = {...req.body}
                 let newProfile = await creatorSchema.findByIdAndUpdate(req.user.id,{ $set: userBody},{upsert: true,new:true})
-                console.log(newProfile)
+                
                 res.json(newProfile)
             }
         }
@@ -249,7 +246,6 @@ const login = async(req,res,next)=>{
 
     const getAvatar = async(req,res,next)=>{
         try{
-            console.log('i a in')
             const exisitingUser = await creatorSchema.findById(req.params.userId)
             const getObjectParams = {
                 Bucket: bucketName,
@@ -291,7 +287,6 @@ const login = async(req,res,next)=>{
             hashtag: exisitingUser.hashtag
             }
 
-            console.log(resp)
             res.json(resp)
 
 
@@ -316,7 +311,7 @@ const login = async(req,res,next)=>{
     }}
 
     const generateTokenEmailVerification = (id) =>{
-        return jwt.sign({id},'abc123',{expiresIn:'7m'})
+        return jwt.sign({id},'abc123',{expiresIn:'60m'})
     }
 
 
@@ -343,10 +338,37 @@ const login = async(req,res,next)=>{
         }
     }
 
+    const resendVerification = async(req,res,next)=>{
+        const {Email} = req.body
+        const userdata = await creatorSchema.findOne({Email})
+
+        const verificationToken = generateTokenEmailVerification(userdata._id); // generate a unique token
+       const verificationLink = `https://fashion-r-services.onrender.com/creator/verifyEmail/${verificationToken}`;
+    
+       const mailOptions = {
+        from: 'igocheservices@gmail.com',
+        to: Email,
+        subject: 'Email Confirmation',
+        html: `Thank you for registering! Please click the following link to verify your email address: <a href="${verificationLink}">${verificationLink}</a>`
+      };
+      
+    
+      transporter.sendMail(mailOptions, function(error, info) {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+          //res.send('mail sent')
+          res.json({verification:'mail sent'})
+        }
+      });
+
+
+    }
 
 
 
     
 
 
-    module.exports = {register,login,deleteUser,userSearch,creatorVerification,getme,getAvatar,editProfile}
+    module.exports = {register,login,deleteUser,userSearch,creatorVerification,getme,getAvatar,editProfile,resendVerification}
