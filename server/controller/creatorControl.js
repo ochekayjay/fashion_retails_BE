@@ -372,24 +372,34 @@ const login = async(req,res,next)=>{
 
     const extraContents = async(req,res,next)=>{
         try{
-            const creator = await creatorSchema.findById(req.params.id)
-            const getObjectParams = {
-                Bucket: bucketName,
-                Key: creator.avatarName
+            console.log(req.query.id)
+            let CreatorResp = {}
+
+
+            if(req.query.id !== 'null'){
+
+                const creator = await creatorSchema.findById(req.query.id)
+                const getObjectParams = {
+                    Bucket: bucketName,
+                    Key: creator.avatarName
+                }
+                const command = new GetObjectCommand(getObjectParams);
+                const url = await getSignedUrl(s3, command, { expiresIn: 3600*5 });
+    
+                CreatorResp = {
+                    _id:creator.id,
+                Username:creator.Username,
+                name:creator.name,
+                Email:creator.Email,
+                avatarLink:url,
+                status:'successful',
+                }
             }
-            const command = new GetObjectCommand(getObjectParams);
-            const url = await getSignedUrl(s3, command, { expiresIn: 3600*5 });
 
-            const CreatorResp = {
-                _id:creator.id,
-            Username:creator.Username,
-            name:creator.name,
-            Email:creator.Email,
-            avatarLink:url,
-            status:'successful',
+            else{
+                CreatorResp = null
             }
-
-
+          
             let hashHolder =  await creatorSchema.aggregate([
             
                 { $sample: { size: 3 } },
