@@ -370,9 +370,111 @@ const login = async(req,res,next)=>{
 
     }
 
+    const extraContents = async(req,res,next)=>{
+        try{
+            const creator = await creatorSchema.findById(req.params.id)
+            const getObjectParams = {
+                Bucket: bucketName,
+                Key: creator.avatarName
+            }
+            const command = new GetObjectCommand(getObjectParams);
+            const url = await getSignedUrl(s3, command, { expiresIn: 3600*5 });
+
+            const CreatorResp = {
+                _id:creator.id,
+            Username:creator.Username,
+            name:creator.name,
+            Email:creator.Email,
+            avatarLink:url,
+            status:'successful',
+            }
+
+
+            let hashHolder =  await creatorSchema.aggregate([
+            
+                { $sample: { size: 3 } },
+                { $limit: 3 }
+              ])
+              let hashExplore = []
+              for(let i=0;i<hashHolder.length;i++){
+                const getObjectParams = {
+                    Bucket: bucketName,
+                    Key: hashHolder[i].avatarName
+                }
+                const command = new GetObjectCommand(getObjectParams);
+                const url = await getSignedUrl(s3, command, { expiresIn: 3600*5 });
+
+                const resp = {
+                    _id:hashHolder[i]._id,
+                Username:hashHolder[i].Username,
+                name:hashHolder[i].name,
+                Email:hashHolder[i].Email,
+                avatarLink:url,
+                status:'successful',
+                }
+
+                hashExplore.unshift(resp)
+              }
+
+              res.json({creator:CreatorResp,allCreators:hashExplore})
+        }
+
+        catch(error){
+            next(error)
+        }
+    }
+
+
+    const querySearchCreatorWithImg = async(req,res,next)=>{
+        let UserArray = []
+       //console.log(`${req.query.message} value`)
+       try{
+           
+           await creatorSchema.find().lean()
+           
+       
+           const foundData = await creatorSchema.aggregate([
+        
+           {$match:
+               {$text: 
+                   {$search: req.query.message,
+                       $caseSensitive: false}} }
+       
+       ])       
+
+
+       if(foundData[0]){
+        for(let i=0;i<foundData.length;i++){
+            let singleItem = {...foundData[i]}
+    
+        
+            const getObjectParams = {
+                Bucket: bucketName,
+                Key: foundData[i].avatarName
+            }
+            const command = new GetObjectCommand(getObjectParams);
+            const url = await getSignedUrl(s3, command, { expiresIn: 3600*5 });
+            singleItem.imageLink = url
+    
+            UserArray.unshift(singleItem)
+        }
+        res.json({UserSearch:UserArray,state:true})
+           
+       }
+       else{
+
+        res.json({state:false,message:"creators not found!"})
+   
+   }
+   }
+       catch(error){
+           console.log(error)
+       }
+   }
+
 
 
     
 
 
-    module.exports = {register,login,deleteUser,userSearch,creatorVerification,getme,getAvatar,editProfile,resendVerification}
+    module.exports = {register,login,deleteUser,userSearch,creatorVerification,getme,getAvatar,editProfile,resendVerification,extraContents,querySearchCreatorWithImg}
