@@ -176,7 +176,8 @@ const login = async(req,res,next)=>{
             color: exisitingUser.backgroundColor,
             Token: generateTokenAuthorization(exisitingUser._id),
             bio: exisitingUser.bio,
-            hashtag: exisitingUser.hashtag
+            hashtag: exisitingUser.hashtag,
+            socketId: exisitingUser.socketId
         })
        }
 
@@ -392,6 +393,7 @@ const login = async(req,res,next)=>{
                 name:creator.name,
                 Email:creator.Email,
                 avatarLink:url,
+                socketId: creator.socketId,
                 status:'successful',
                 }
             }
@@ -419,6 +421,7 @@ const login = async(req,res,next)=>{
                 Username:hashHolder[i].Username,
                 name:hashHolder[i].name,
                 Email:hashHolder[i].Email,
+                socketId: hashHolder[i].socketId,
                 avatarLink:url,
                 status:'successful',
                 }

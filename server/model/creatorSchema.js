@@ -50,6 +50,10 @@ const creator = mongoose.Schema({
     },
     instagram:{
         type:String
+    },
+    socketId:{
+        type:String,
+        default: 'null'
     }
 },{
     timestamps :true
