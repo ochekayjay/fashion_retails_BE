@@ -38,7 +38,7 @@ const createNotification = async(req,res,next)=>{
     try{
         const {notifiedSockets,link,notified,creatorNotification} = req.body
 
-        let newNotif = notificationSchema.create({
+        let newNotif = await notificationSchema.create({
             notifier: req.user.id,
             link: link,
             notified: notified,
@@ -47,7 +47,6 @@ const createNotification = async(req,res,next)=>{
 
         const populatedDoc = await notificationSchema.findById(newNotif._id).populate('notifier');
 
-        
 
         const getObjectParamsOne = {
             Bucket: bucketName,
@@ -79,6 +78,7 @@ const createNotification = async(req,res,next)=>{
         }
 
         const notifierObj = {imageLink:avatarUrl,creatorUsername:populatedDoc.notifier.Username,creatorName:populatedDoc.notifier.name,link}
+        
         followersArray.onlineTagged.forEach(tag=>global.io.to(tag).emit('notifications',notifierObj))
 
         res.json({status:true})
