@@ -66,8 +66,6 @@ const createNotification = async(req,res,next)=>{
                 */        
             }
         }
-
-        console.log(`tags in ${followersArray}`)
         followersArray.onlineTagged.forEach(tag=>global.io.to(tag).emit('notifications',newNotif))
 
         res.json({status:true})

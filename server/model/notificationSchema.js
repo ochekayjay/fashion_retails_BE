@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const creator = mongoose.Schema({
+const notification = mongoose.Schema({
     notifier:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Creator',
@@ -20,4 +20,4 @@ const creator = mongoose.Schema({
 })
 
 
-module.exports = mongoose.model('Creator',creator)
+module.exports = mongoose.model('Notification',notification)

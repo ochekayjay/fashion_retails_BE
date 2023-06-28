@@ -10,6 +10,6 @@ const jwt = require('jsonwebtoken')
 
 
 
-router.post('/post',authorizer,createNotification)
+router.post('/project',authorizer,createNotification)
 
 module.exports = router
