@@ -6,13 +6,15 @@ const notification = mongoose.Schema({
         ref: 'Creator',
         required:true,
         },
-    notifiedArray:[{
+        notified:[{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Creator',
             required:true,
             }], 
-                                        
-    projectUrl:{
+            creatorNotification: [{
+                type: String
+            }],        
+            link:{
                 type: String
             },
 },{

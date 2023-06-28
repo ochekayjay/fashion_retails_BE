@@ -36,14 +36,25 @@ let followersArray = {onlineTagged:[],offlineTagged:[]}
 
 const createNotification = async(req,res,next)=>{
     try{
-        const {notifiedSockets,link,notified} = req.body
+        const {notifiedSockets,link,notified,creatorNotification} = req.body
 
         let newNotif = notificationSchema.create({
             notifier: req.user.id,
             link: link,
             notified: notified,
-            notifiedSockets:notifiedSockets,
+            creatorNotification
         })
+
+        const populatedDoc = await notificationSchema.findById(newNotif._id).populate('notifier');
+
+        
+
+        const getObjectParamsOne = {
+            Bucket: bucketName,
+            Key: populatedDoc.notifier.avatarName
+        }
+        const commandOne = new GetObjectCommand(getObjectParamsOne);
+        const avatarUrl = await getSignedUrl(s3, commandOne, { expiresIn: 3600*5 });
 
         const foundSockets = [...notifiedSockets]
         for(let i=0; i<foundSockets.length;i++){
@@ -66,7 +77,9 @@ const createNotification = async(req,res,next)=>{
                 */        
             }
         }
-        followersArray.onlineTagged.forEach(tag=>global.io.to(tag).emit('notifications',newNotif))
+
+        const notifierObj = {imageLink:avatarUrl,creatorUsername:populatedDoc.notifier.Username,creatorName:populatedDoc.notifier.name,link}
+        followersArray.onlineTagged.forEach(tag=>global.io.to(tag).emit('notifications',notifierObj))
 
         res.json({status:true})
                 
