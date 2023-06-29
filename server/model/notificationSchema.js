@@ -10,13 +10,13 @@ const notification = mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Creator',
             required:true,
-            }], 
-            creatorNotification: [{
-                type: String
-            }],        
+            }],         
             link:{
                 type: String
             },
+            imageName:{
+                type: String
+            }
 },{
     timestamps :true
 })
