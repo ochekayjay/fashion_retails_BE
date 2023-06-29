@@ -82,11 +82,29 @@ const createNotification = async(req,res,next)=>{
     }
 }
 
-/**
- * const getNotification = async(req,res,next)=>{
-    const notifications = await notificationSchema.fin
+const getNotification = async(req,res,next)=>{
+
+    const notifications = await notificationSchema.find({ $or: [{ notifier: req.params.id }, { notified: req.params.id }] })
+    const UserArray = []
+    
+    for(let i=0;i<notifications.length;i++){
+        let singleItem = {...notifications[i].toObject()}
+
+        
+        const getObjectParams = {
+            Bucket: bucketName,
+            Key: notifications[i].imageName
+        }
+        const command = new GetObjectCommand(getObjectParams);
+        const url = await getSignedUrl(s3, command, { expiresIn: 3600*5 });
+        singleItem.imageLink = url
+
+        UserArray.unshift(singleItem)
+    }
+
+    res.json(UserArray)
 }
- */
+ 
 
 
-module.exports = {createNotification}
+module.exports = {createNotification,getNotification}
