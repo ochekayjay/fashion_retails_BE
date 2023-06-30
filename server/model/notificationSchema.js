@@ -16,6 +16,12 @@ const notification = mongoose.Schema({
             },
             imageName:{
                 type: String
+            },
+            creator:{
+                type: String
+            },
+            title:{
+                type: String
             }
 },{
     timestamps :true

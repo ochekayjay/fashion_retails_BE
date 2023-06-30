@@ -36,16 +36,19 @@ let followersArray = {onlineTagged:[],offlineTagged:[]}
 
 const createNotification = async(req,res,next)=>{
     try{
-        const {notifiedSockets,link,notified,imageName,imageLink} = req.body
+        const {notifiedSockets,link,notified,imageName,imageLink,title,creator} = req.body
 
         let newNotif = await notificationSchema.create({
             notifier: req.user.id,
             link: link,
             notified: notified,
             imageName,
+            title,
+            creator
         })
 
         const populatedDoc = await notificationSchema.findById(newNotif._id).populate('notifier');
+
 
         const foundSockets = [...notifiedSockets]
         for(let i=0; i<foundSockets.length;i++){
