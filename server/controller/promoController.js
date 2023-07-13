@@ -83,7 +83,7 @@ const getUserPromos = async(req,res,next)=>{
         const UserArray = []
 
         const data = await promoSchema.find({creator :req.params.creatorId})
-        console.log(data)
+        
     if(data[0]){
         for(let i=0;i<data.length;i++){
             let singleItem = {...data[i].toObject()}
@@ -155,4 +155,51 @@ const deletePromo = async (req,res,next)=>{
     }
 }
 
-module.exports = {createPromo,getUserPromos,deletePromo}
+const getAllPromos = async(req,res,next)=>{
+    const promData = await promoSchema.aggregate([
+         {
+            $lookup: {
+                from: 'creators', // the name of the collection to join with
+                localField: 'creator',
+                foreignField: '_id',
+                as: 'promoCreator',
+            },
+        },
+        {
+            $unwind: '$promoCreator',
+        },
+        { $sample: { size: 3 } }
+        ])
+    const promoArray = []
+
+    
+    for(let i=0;i<promData.length;i++){
+        
+        const getObjectParamsCreator = {
+            Bucket: bucketName,
+            Key: promData[i].promoCreator.avatarName
+        }
+        const commandCreator = new GetObjectCommand(getObjectParamsCreator);
+        const urlCreator = await getSignedUrl(s3, commandCreator, { expiresIn: 3600*5 });
+
+      
+
+        let singleItem = {...promData[i]}
+
+    
+        const getObjectParams = {
+            Bucket: bucketName,
+            Key: promData[i].imageName
+        }
+        const command = new GetObjectCommand(getObjectParams);
+        const url = await getSignedUrl(s3, command, { expiresIn: 3600*5 });
+        singleItem.imageLink = url
+        singleItem.creatorImage = urlCreator
+
+        promoArray.unshift(singleItem)
+    }
+
+    res.json(promoArray)
+}
+
+module.exports = {createPromo,getUserPromos,deletePromo,getAllPromos}
