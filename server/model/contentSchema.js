@@ -66,4 +66,6 @@ const content = mongoose.Schema({
 
 content.index([{ projectDescription: 'text'},{ title: 'text'},{ hashtag: 'text'}])
 //content.index([{ Username: 'text'},{bio:'text'},{name:'text'}])
+
+
 module.exports = mongoose.model('Content',content)

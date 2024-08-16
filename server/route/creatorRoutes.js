@@ -21,7 +21,7 @@ const {S3Client,PutObjectCommand} = require('@aws-sdk/client-s3')
 const optimizeImage = async(req,res,next)=>{
   if(req?.file){
 
-    const image = req.file;
+  const image = req.file;
   const imageBuffer = image.buffer;
   
   const compression = 30; // Set your desired compression value
@@ -65,7 +65,7 @@ const upload = multer({ storage: storage })
 
 
 
-//verification and email transporting
+//verification and email transporting data
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
